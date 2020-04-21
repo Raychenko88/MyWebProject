@@ -14,7 +14,7 @@ public class UserDAO {
     public static User save(User user) {
         String sql = "INSERT INTO users " +
                 "(login, password, first_name, last_name) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?)";
         String sequenceSQL = "SELECT currval(pg_get_serial_sequence('users','id'))";
 
         int result = 0;

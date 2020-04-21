@@ -40,6 +40,8 @@ public class UserController extends HttpServlet {
 			String password = req.getParameter("password");
 
 			User user = UserService.getByLoginAndPassword(login, password);
+			
+
 			if (user != null) {
 				req.setAttribute("user", user);
 				List<Item> items = ItemService.getAllAvailable();
@@ -52,28 +54,32 @@ public class UserController extends HttpServlet {
 				dispatcher = req.getRequestDispatcher("/jsp/wrong-auth.jsp");
 			}
 			dispatcher.forward(req, resp);
-		} else if (action.equals("register")) {			
+		} else if (action.equals("register")) {
 			String login = req.getParameter("login");
 			String password = req.getParameter("password");
 			String firstName = req.getParameter("fname");
 			String lastName = req.getParameter("lname");
-			String email = req.getParameter("email");
-			String phone = req.getParameter("phone");
+
 			User user = new User(login, password, firstName, lastName);
+			if (UserDAO.getByLoginAndPassword(user.getLogin(), user.getPassword()) == null) {
 
-			User savedUser = UserService.save(user);
-			
-			if (savedUser.getId() != null) {
-				req.setAttribute("user", savedUser);
-				List<Item> items = ItemService.getAllAvailable();
-				req.setAttribute("itemCollection", items);
 
-				dispatcher = req.getRequestDispatcher("/jsp/items.jsp");
-			} else {
-				req.setAttribute("errorMsg", "Problem with registration!");
-				dispatcher = req.getRequestDispatcher("/jsp/registration.jsp");
+				User savedUser = UserService.save(user);
+
+				if (savedUser.getId() != null) {
+					req.setAttribute("user", savedUser);
+					List<Item> items = ItemService.getAllAvailable();
+					req.setAttribute("itemCollection", items);
+
+					dispatcher = req.getRequestDispatcher("/jsp/items.jsp");
+				} else {
+					req.setAttribute("errorMsg", "Problem with registration!");
+					dispatcher = req.getRequestDispatcher("/jsp/registration.jsp");
+				}
+			}else {
+				dispatcher = req.getRequestDispatcher("/jsp/index.jsp"); // тут не пойму  что кнкретно нужно указывать
 			}
-			dispatcher.forward(req, resp);
+//			dispatcher.forward(req, resp);  вот это не совсем пойму что делает
 		}
 	}
 

@@ -17,16 +17,12 @@
     <br>
     <input type="text" size="40" name="lname" placeholder="Input last name" required>
     <br>
-    <input type="text" size="40" name="email" placeholder="Input email" required>
-    <br>
-    <input type="text" size="40" name="phone" placeholder="Input phone">
-    <br>
     <input type="submit" value="register">
 </form>
 
 <br>
 <h3>
-    <a href="/WebWithJSTLMA45_war/index.jsp">GO BACK!</a>
+    <a href="/WebWithJSTL/index.jsp">GO BACK!</a>
 </h3>
 
 	<h2><c:out value="${errorMsg}"/></h2>
