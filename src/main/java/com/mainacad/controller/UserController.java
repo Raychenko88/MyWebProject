@@ -77,9 +77,9 @@ public class UserController extends HttpServlet {
 					dispatcher = req.getRequestDispatcher("/jsp/registration.jsp");
 				}
 			}else {
-				dispatcher = req.getRequestDispatcher("/jsp/index.jsp"); // тут не пойму  что кнкретно нужно указывать
+				dispatcher = req.getRequestDispatcher("/index.jsp"); // тут не пойму  что кнкретно нужно указывать
 			}
-//			dispatcher.forward(req, resp);  вот это не совсем пойму что делает
+			dispatcher.forward(req, resp);
 		}
 	}
 
