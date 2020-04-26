@@ -40,7 +40,7 @@ public class UserController extends HttpServlet {
 			String password = req.getParameter("password");
 
 			User user = UserService.getByLoginAndPassword(login, password);
-			
+
 
 			if (user != null) {
 				req.setAttribute("user", user);
@@ -61,8 +61,7 @@ public class UserController extends HttpServlet {
 			String lastName = req.getParameter("lname");
 
 			User user = new User(login, password, firstName, lastName);
-			if (UserDAO.getByLoginAndPassword(user.getLogin(), user.getPassword()) == null) {
-
+			if (UserDAO.getByLogin(user.getLogin()) == null) {
 
 				User savedUser = UserService.save(user);
 

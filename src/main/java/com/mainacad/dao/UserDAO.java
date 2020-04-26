@@ -156,4 +156,29 @@ public class UserDAO {
         }
     }
 
+    public static User getByLogin (String login){
+        String sql = "SELECT * FROM users WHERE login = ? ";
+        try ( Connection connection = ConnectionToDB.getConnection();
+              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, login);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                User user = new User (
+                        resultSet.getInt("id"),
+                        resultSet.getString("login"),
+                        resultSet.getString("password"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name")
+                );
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }

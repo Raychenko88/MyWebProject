@@ -30,7 +30,7 @@
 	</c:if>
 
 	<!-- Button "Closed" -->
-	<c:if test="${cart.closed == 'TO_BE_CLOSED'}">
+	<c:if test="${cart.closed == 1}">
 		<form action="cart" method="post">
 			<input type="text" name="action" value="do-cart-closed" hidden>
 			<input hidden="true" name="userId" value="${user.id}"> <input

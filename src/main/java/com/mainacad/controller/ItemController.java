@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mainacad.dao.CartDAO;
 import com.mainacad.dao.ItemDAO;
+import com.mainacad.dao.OrderDAO;
 import com.mainacad.dao.UserDAO;
 import com.mainacad.dao.model.OrderDTO;
 import com.mainacad.model.Cart;
@@ -24,6 +26,9 @@ import com.mainacad.service.UserService;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/item")
 public class ItemController extends HttpServlet {
+	public ItemController() {
+
+	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -36,9 +41,11 @@ public class ItemController extends HttpServlet {
 		User user = UserService.getById(userIdSelected);
 
 		String action = req.getParameter("action");
+
 		if (action.equals("add-item-in-cart")) {
 			Integer itemIdSelected = Integer.valueOf(req.getParameter("itemId"));
 			Item item = ItemService.getById(itemIdSelected);
+
 			if (item != null) {
 				Cart cart = CartService.addItem(user, item);
 				req.setAttribute("cart", cart);

@@ -17,37 +17,67 @@ import java.util.List;
 public class OrderDAO {
 
     public static Order save(Order order) {
-        String sql = "INSERT INTO orders " +
-                "(item_id, cart_id, amount) " +
-                "VALUES (?, ?, ?)";
-        String sequenceSQL = "SELECT currval(pg_get_serial_sequence('orders','id'))";
+//        String sql = "INSERT INTO orders " +
+//                "(item_id, cart_id, amount) " +
+//                "VALUES (?, ?, ?)";
+//        String sequenceSQL = "SELECT currval(pg_get_serial_sequence('orders','id'))";
+//
+//        int result = 0;
+//        try ( Connection connection = ConnectionToDB.getConnection();
+//              PreparedStatement preparedStatement = connection.prepareStatement(sql);
+//              PreparedStatement sequenceStatement = connection.prepareStatement(sequenceSQL)) {
+//            preparedStatement.setInt(1, order.getItemId());
+//            preparedStatement.setInt(2, order.getCartId());
+//            preparedStatement.setInt(3, order.getAmount());
+//            result = preparedStatement.executeUpdate();
+//
+//            if( result == 1 ) {
+//                ResultSet resultSet = sequenceStatement.executeQuery();
+//                while (resultSet.next()) {
+//                    Integer id = resultSet.getInt(1);
+//                    order.setId(id);
+//                    break;
+//                }
+//            }
+//            else {
+//                return null;
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return order;
+        String sql = "INSERT INTO orders(item_id, cart_id, amount) VALUES(?,?,?)";
+        String sequenceSql = "SELECT currval(pg_get_serial_sequence('orders','id'))";
 
-        int result = 0;
-        try ( Connection connection = ConnectionToDB.getConnection();
-              PreparedStatement preparedStatement =
-                      connection.prepareStatement(sql);
-              PreparedStatement sequenceStatement =
-                      connection.prepareStatement(sequenceSQL)) {
+        try (Connection connection = ConnectionToDB.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             PreparedStatement seqStatement = connection.prepareStatement(sequenceSql)
+        ){
+
             preparedStatement.setInt(1, order.getItemId());
-            preparedStatement.setInt(2, order.getCartId());
             preparedStatement.setInt(3, order.getAmount());
-            result = preparedStatement.executeUpdate();
+            preparedStatement.setInt(2, order.getCartId());
 
-            if( result == 1 ) {
-                ResultSet resultSet = sequenceStatement.executeQuery();
+            preparedStatement.executeUpdate();
+
+            ResultSet resultSet = seqStatement.executeQuery();
+            if (CartDAO.getById(order.getCartId()) != null && order.getItemId() == OrderDAO.findOrderByItem(order.getItemId()).getItemId()){
+                OrderDAO.updateAmount(order, order.getAmount() + OrderDAO.findOrderByItem(order.getItemId()).getAmount());
+                return order;
+            }else {
                 while (resultSet.next()) {
                     Integer id = resultSet.getInt(1);
                     order.setId(id);
-                    break;
+
+                    return order;
                 }
             }
-            else {
-                return null;
-            }
-        } catch (SQLException e) {
+
+        } catch (SQLException e){
             e.printStackTrace();
         }
-        return order;
+
+        return null;
     }
 
     public static List<Order> getAllByCart(Cart cart) {
@@ -153,6 +183,37 @@ public class OrderDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    public static Order findOrderByItem(Integer itemId){
+        String sql =
+                "SELECT o.id, o.item_id, o.cart_id, o.amount " +
+                        "FROM orders o " +
+                        "JOIN carts c ON o.cart_id = c.id " +
+                        "JOIN items i ON o.item_id = i.id " +
+                        "WHERE c.closed = '0' " +
+                        "AND i.id = ?";
+        try (Connection connection = ConnectionToDB.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)
+        ){
+
+            preparedStatement.setInt(1, itemId);
+
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Integer id = resultSet.getInt("id");
+                Integer itemId2 = resultSet.getInt("item_id");
+                Integer cartId = resultSet.getInt("cart_id");
+                Integer amount = resultSet.getInt("amount");
+                Order order = new Order(id,itemId2,cartId,amount);
+                return order;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
         return null;
     }
 }
