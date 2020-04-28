@@ -7,11 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="WebWithJSTLMA45" />
+        <module name="WebWithJSTL" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="WebWithJSTLMA45" target="8" />
+      <module name="WebWithJSTL" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

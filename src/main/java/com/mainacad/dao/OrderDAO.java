@@ -61,16 +61,11 @@ public class OrderDAO {
             preparedStatement.executeUpdate();
 
             ResultSet resultSet = seqStatement.executeQuery();
-            if (CartDAO.getById(order.getCartId()) != null && order.getItemId() == OrderDAO.findOrderByItem(order.getItemId()).getItemId()){
-                OrderDAO.updateAmount(order, order.getAmount() + OrderDAO.findOrderByItem(order.getItemId()).getAmount());
-                return order;
-            }else {
-                while (resultSet.next()) {
-                    Integer id = resultSet.getInt(1);
-                    order.setId(id);
+            while (resultSet.next()) {
+                Integer id = resultSet.getInt(1);
+                order.setId(id);
 
-                    return order;
-                }
+                return order;
             }
 
         } catch (SQLException e){
@@ -83,7 +78,7 @@ public class OrderDAO {
     public static List<Order> getAllByCart(Cart cart) {
         String sql = "SELECT * " +
                 "FROM orders " +
-                "WHERE o.cart_id=?";
+                "WHERE cart_id=?";
         List<Order> orders = new ArrayList<>();
         try ( Connection connection = ConnectionToDB.getConnection();
               PreparedStatement preparedStatement =
@@ -94,7 +89,7 @@ public class OrderDAO {
 
             while(resultSet.next()) {
                 Order order = new Order (
-                        resultSet.getInt("order_id"),
+                        resultSet.getInt("id"),
                         resultSet.getInt("item_id"),
                         resultSet.getInt("cart_id"),
                         resultSet.getInt("amount"));
@@ -109,7 +104,7 @@ public class OrderDAO {
 
     public static Order getById(Integer id) {
         String sql = "SELECT * FROM orders " +
-                "WHERE o.id = ?";
+                "WHERE id = ?";
         try ( Connection connection = ConnectionToDB.getConnection();
               PreparedStatement preparedStatement =
                       connection.prepareStatement(sql)
@@ -118,7 +113,7 @@ public class OrderDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 Order order = new Order (
-                        resultSet.getInt("order_id"),
+                        resultSet.getInt("id"),
                         resultSet.getInt("item_id"),
                         resultSet.getInt("cart_id"),
                         resultSet.getInt("amount"));
@@ -215,6 +210,20 @@ public class OrderDAO {
         }
 
         return null;
+    }
+
+    public static Boolean isItemExistInCart(Cart cart) throws SQLException {
+        String orderIdSql = "SELECT id FROM orders WHERE cart_id = ?";
+
+        try (Connection connection = ConnectionToDB.getConnection();
+             PreparedStatement orderIdStatement = connection.prepareStatement(orderIdSql)
+        ){
+            orderIdStatement.setInt(1, cart.getId());
+            ResultSet resultSet = orderIdStatement.executeQuery();
+            return  resultSet.next();
+        } catch (SQLException e){
+            throw e;
+        }
     }
 }
 

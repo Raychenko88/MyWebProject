@@ -1,6 +1,7 @@
 package com.mainacad.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -22,6 +23,7 @@ import com.mainacad.service.CartService;
 import com.mainacad.service.ItemService;
 import com.mainacad.service.OrderService;
 import com.mainacad.service.UserService;
+import lombok.SneakyThrows;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/item")
@@ -30,8 +32,9 @@ public class ItemController extends HttpServlet {
 
 	}
 
+	@SneakyThrows
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp){
 		req.setCharacterEncoding("UTF-8");
 		resp.setCharacterEncoding("UTF-8");
 		resp.setHeader("Cache-Control", "no-store");
