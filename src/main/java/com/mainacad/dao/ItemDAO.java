@@ -174,17 +174,38 @@ public class ItemDAO {
 				resultSet.getInt("price"), resultSet.getInt("availability"));
 	}
 
+	public static List<Item> findByItemCode(String code) {
+		List<Item> items = new ArrayList<>();
+
+		String statement = "SELECT * FROM items WHERE item_code=?";
+
+		try (Connection connection = ConnectionToDB.getConnection();
+			 PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
+
+			preparedStatement.setString(1, code);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				items.add(getItemFromResultSetItem(resultSet));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return items;
+	}
+
+	private static Item getItemFromResultSetItem(ResultSet resultSet) throws SQLException {
+		Item item = new Item();
+
+		item.setId(resultSet.getInt("id"));
+		item.setCode(resultSet.getString("item_code"));
+		item.setName(resultSet.getString("name"));
+		item.setPrice(resultSet.getInt("price"));
+		item.setPrice(resultSet.getInt("availability"));
+
+		return item;
+	}
 }
-/*
- * select u.first_name, c.user_id, SUM(i.price * o.amount), c.creation_time from
- * items i join orders o on o.item_id = i.id JOIN carts c ON c.id = o.cart_id
- * JOIN users u ON c.user_id = u.id GROUP BY u.first_name, c.user_id,
- * c.creation_time ORDER BY c.creation_time
- * 
- * 
- * select u.first_name, c.user_id, SUM(i.price * o.amount), c.creation_time from
- * items i JOIN (SELECT * FROM orders WHERE amount >200) AS o ON o.item_id =
- * i.id JOIN carts c ON c.id = o.cart_id JOIN users u ON c.user_id = u.id GROUP
- * BY u.first_name, c.user_id, c.creation_time ORDER BY c.creation_time
- * 
- */

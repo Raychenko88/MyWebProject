@@ -12,9 +12,9 @@
 
 <!-- All carts -->
 	<form action="cart" method="post">
-		<input type="text" name="action" value="all-carts" hidden> <input
-			hidden="true" name="userId" value="${user.id}"> <input
-			type="submit" value="All carts">
+		<input type="text" name="action" value="all-carts" hidden>
+		<input hidden="true" name="userId" value="${user.id}">
+		<input type="submit" value="All carts">
 	</form>
 
 	<br>
