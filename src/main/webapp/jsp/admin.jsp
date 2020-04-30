@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html>
 <head>
     <title>Store</title>
@@ -13,7 +13,7 @@
 </h3>
 
 
-<form action="itemAdmin" method="post">
+<form action="item-admin" method="post">
     <input type="text" name="action" value="add-item" hidden>
     <input type="text" size="40" name="item-code" placeholder="Item code" required>
     <br>
@@ -27,7 +27,7 @@
 </form>
 
 <br>
-<form action="itemAdmin" method="post">
+<form action="item-admin" method="post">
     <input type="text" name="action" value="delete-item" hidden>
     <input type="text" size="40" name="item-code" placeholder="Item code" required>
     <br>

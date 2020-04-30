@@ -1,4 +1,4 @@
-package com.mainacad.controller.adminControllers;
+package com.mainacad.controller.admin;
 
 
 import com.mainacad.dao.ItemDAO;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/itemAdmin")
+@WebServlet(urlPatterns = "/item-admin")
 public class AdminItemController extends HttpServlet {
 
     @SneakyThrows
@@ -20,7 +20,6 @@ public class AdminItemController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp){
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-        resp.setHeader("Cache-Control", "no-store");
 
         RequestDispatcher dispatcher;
         String action = req.getParameter("action");
@@ -32,7 +31,7 @@ public class AdminItemController extends HttpServlet {
             String name = req.getParameter("name");
             String strAvailability = req.getParameter("availability");
             Integer availability = Integer.valueOf(strAvailability);
-            if (ItemDAO.findByItemCode(itemCode).size() > 0){
+            if (!ItemDAO.findByItemCode(itemCode).isEmpty()){
                 for (Item item : ItemDAO.findByItemCode(itemCode)){
                     if (item.getPrice().equals(price)){
                         req.setAttribute("errorMsg", "Such a item already registered");
@@ -51,14 +50,14 @@ public class AdminItemController extends HttpServlet {
 
        else if (action.equals("delete-item")){
             String itemCode = req.getParameter("item-code");
-            if (ItemDAO.findByItemCode(itemCode).size() > 0){
+            if (!ItemDAO.findByItemCode(itemCode).isEmpty()){
 
                 for (Item item : ItemDAO.findByItemCode(itemCode)){
                     ItemDAO.delete(item.getId());
-                    req.setAttribute("errorMsg", "Item deleted");
-                    dispatcher = req.getRequestDispatcher("/jsp/admin.jsp");
-                    dispatcher.forward(req,resp);
                 }
+                req.setAttribute("errorMsg", "Item deleted");
+                dispatcher = req.getRequestDispatcher("/jsp/admin.jsp");
+                dispatcher.forward(req,resp);
             }else {
                 req.setAttribute("errorMsg", "There is no such thing");
                 dispatcher = req.getRequestDispatcher("/jsp/admin.jsp");

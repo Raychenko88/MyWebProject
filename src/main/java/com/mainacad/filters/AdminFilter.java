@@ -1,4 +1,4 @@
-package com.mainacad.Filters;
+package com.mainacad.filters;
 
 import com.mainacad.dao.UserDAO;
 import com.mainacad.model.User;
