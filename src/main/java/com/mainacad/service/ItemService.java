@@ -14,4 +14,15 @@ public class ItemService {
 		return ItemDAO.getAllAvailable();
 	}
 
+	public static void delete(Integer id){
+		ItemDAO.delete(id);
+	}
+
+	public static Item save(Item item){
+		return ItemDAO.save(item);
+	}
+
+	public static List<Item> findByItemCode(String code){
+		return ItemDAO.findByItemCode(code);
+	}
 }
